@@ -5,13 +5,15 @@ import { UserModule } from '../user/user.module';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import { SequelizeModule} from "@nestjs/sequelize";
 import { configuration } from "../../configurations";
+import {User} from "../user/models/user.model";
+import {AuthModule} from "../auth/auth.module";
+import {TokenModule} from "../token/token.module";
 
 @Module({
   imports: [ConfigModule.forRoot({
 	  isGlobal: true,
 	  load: [configuration],
   }),
-	  UserModule,
 	  SequelizeModule.forRootAsync({
 		  imports: [ConfigModule],
 		  inject: [ConfigService],
@@ -24,9 +26,12 @@ import { configuration } from "../../configurations";
 			  database: configService.get('db_name'),
 			  synchronize: true,
 			  autoLoadModels: true,
-			  models: []
+			  models: [User]
 		  })
-	  })
+	  }),
+	  UserModule,
+	  AuthModule,
+	  TokenModule
   ],
   controllers: [AppController],
   providers: [AppService],
