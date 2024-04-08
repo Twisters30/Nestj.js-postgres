@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {InjectModel} from "@nestjs/sequelize";
-import {User} from "./models/user.model";
+import { InjectModel } from "@nestjs/sequelize";
+import { User } from "./models/user.model";
 import * as bcrypt from 'bcrypt'
-import {CreateUserDTO} from "./dto";
+import {CreateUserDTO, UpdateUserDTO} from "./dto";
+import passport from "passport";
 
 type TUser = {
 	firstName: string;
@@ -32,6 +33,15 @@ export class UserService {
 			password: dto.password
 		}
 		await this.userRepository.create(newUser);
+		return newUser;
+	}
+	async updateUser(email: string, dto: UpdateUserDTO): Promise<UpdateUserDTO> {
+		await this.userRepository.update(dto, {returning: undefined, where: {email}});
 		return dto;
+	}
+
+	async deleteUser(email: string) {
+		await this.userRepository.destroy({where: {email}})
+		return true
 	}
 }
