@@ -3,11 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../user/user.module';
 import {ConfigModule, ConfigService} from "@nestjs/config";
-import { SequelizeModule} from "@nestjs/sequelize";
+import {SequelizeModule, SequelizeModuleOptions} from "@nestjs/sequelize";
 import { configuration } from "../../configurations";
 import {User} from "../user/models/user.model";
 import {AuthModule} from "../auth/auth.module";
 import {TokenModule} from "../token/token.module";
+import {WatchlistModule} from "../watchlist/watchlist.module";
+import {Watchlist} from "../watchlist/models/watchlist.model";
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -26,12 +28,13 @@ import {TokenModule} from "../token/token.module";
 			  database: configService.get('db_name'),
 			  synchronize: true,
 			  autoLoadModels: true,
-			  models: [User]
-		  })
+			  models: [User,Watchlist]
+		  } as SequelizeModuleOptions)
 	  }),
 	  UserModule,
 	  AuthModule,
-	  TokenModule
+	  TokenModule,
+	  WatchlistModule
   ],
   controllers: [AppController],
   providers: [AppService],
