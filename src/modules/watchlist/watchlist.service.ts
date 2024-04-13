@@ -9,17 +9,25 @@ export class WatchlistService {
 	constructor(@InjectModel(Watchlist) private readonly watchlistRepository: typeof Watchlist) {}
 
 	async createAsset(userId, dto: WatchListDTO): Promise<CreateAssetResponse> {
-		const newWatchlist = {
-			user: userId,
-			name: dto.name,
-			assetId: dto.assetId
+		try {
+			const newWatchlist = {
+				user: userId,
+				name: dto.name,
+				assetId: dto.assetId
+			}
+			await this.watchlistRepository.create(newWatchlist);
+			return newWatchlist;
+		} catch (error) {
+			throw new Error(error);
 		}
-		await this.watchlistRepository.create(newWatchlist);
-		return newWatchlist;
 	}
 
 	async deleteAsset(userId: string, assetId: string): Promise<boolean> {
-		await this.watchlistRepository.destroy({ where: {id: assetId, user: userId}})
-		return true;
+		try {
+			await this.watchlistRepository.destroy({ where: {id: assetId, user: userId}})
+			return true;
+		} catch (error) {
+			throw new Error(error);
+		}
 	}
 }
